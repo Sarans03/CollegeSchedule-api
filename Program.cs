@@ -1,6 +1,7 @@
 using CollegeSchedule.Data;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
+using CollegeSchedule.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ var connectionString = $"Host={Environment.GetEnvironmentVariable("DB_HOST")};Po
 
 // Настройка DbContext
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+
+builder.Services.AddScoped<IScheduleService, ScheduleService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
