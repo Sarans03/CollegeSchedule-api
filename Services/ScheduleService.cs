@@ -1,4 +1,5 @@
-﻿using CollegeSchedule.Data;
+﻿using System.Linq;
+using CollegeSchedule.Data;
 using CollegeSchedule.DTO;
 using CollegeSchedule.Models;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,19 @@ namespace CollegeSchedule.Services
             ValidateDates(startDate, endDate);
             var group = await GetGroupByName(groupName);
             var schedules = await LoadSchedules(group.GroupId, startDate, endDate);
-            return BuildScheduleDto(startDate, endDate, schedules); // Исправлено здесь
+            return BuildScheduleDto(startDate, endDate, schedules); 
+        }
+
+        public async Task<List<GroupDto>> GetAllGroups()
+        {
+            return await _db.StudentGroups
+                .Select(g => new GroupDto
+                {
+                    Id = g.GroupId,
+                    Name = g.GroupName
+                })
+                .OrderBy(g => g.Name)
+                .ToListAsync();
         }
 
         private static void ValidateDates(DateTime start, DateTime end)
